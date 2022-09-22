@@ -8,7 +8,7 @@ const app = express();
 app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
-const dbURL = "mongodb+srv://angelayu:angelayu@cluster0.vdlpgxh.mongodb.net/?retryWrites=false/userDB";
+const dbURL = 'mongodb+srv://angelayu:angelayu@cluster0.vdlpgxh.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(dbURL, {useNewUrlParser: true});
 
 const userSchema = {
