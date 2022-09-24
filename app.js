@@ -5,7 +5,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
-const session = require("express");
+const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 
@@ -48,13 +48,33 @@ app.get("/", function(req, res){
     res.render("home");
 });
 
+app.get("/secrets", function (req, res) {
+    if(req.isAuthenticated()){
+        res.render("secrets");
+    } else {
+        res.redirect("/login")
+    }
+        
+});
+
+
 
 app.get("/register", function (req, res) {
     res.render("register");
 });
 
 app.post("/register", function(req, res){
-    
+    User.register({username: req.body.username}, req.body.password, function (err, user){
+        if(err){
+            console.log(err)
+            res.redirect("register")
+        }else {
+           passport.authenticate("local")(req, res, function(){
+            res.redirect("secrets")
+            });
+        }
+    });
+
 });
 
 
@@ -63,7 +83,21 @@ app.get("/login", function (req, res) {
 });
 
 app.post("/login", function(req, res){
-    
+    const user = new User ({
+       username: req.body.username,
+       password: req.body.password 
+    });
+
+
+    req.login(user, function (err){
+        if (err){
+            console.log(err)
+        } else {
+            passport.authenticate("local")(req, res, function(){
+                res.redirect("/secrets")
+            })
+        }
+    })
 });
 
 
