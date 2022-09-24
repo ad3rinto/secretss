@@ -15,6 +15,19 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 const dbURL = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.vdlpgxh.mongodb.net/?retryWrites=true&w=majority`;
+
+app.use(session({
+    secret:"Outlittlesecret",
+    resave:false,
+    saveUninitialized:false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+
+
 mongoose.connect(dbURL, {useNewUrlParser: true});
 
 const userSchema = new mongoose.Schema ({
@@ -22,9 +35,12 @@ const userSchema = new mongoose.Schema ({
     password:String
 });
 
-
+userSchema.plugin(passportLocalMongoose);
 
 const User = new mongoose.model("User", userSchema);
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 
