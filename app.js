@@ -3,6 +3,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
+const session = require("express");
+const passport = require("passport");
+const passportLocalMongoose = require("passport-local-mongoose");
+
 
 const app = express();
 app.use(express.static("public"));
@@ -30,17 +34,7 @@ app.get("/register", function (req, res) {
 });
 
 app.post("/register", function(req, res){
-    const newUser = new User ({
-        email:req.body.username,
-        password:req.body.password
-    });
-    newUser.save(function(err){
-        if (err){
-            console.log(err)
-        } else {
-            res.render("secrets")
-        }
-    });
+    
 });
 
 
